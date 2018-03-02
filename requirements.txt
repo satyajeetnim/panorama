@@ -2,3 +2,4 @@ Flask
 Flask-MongoAlchemy
 Flask-WTF
 passlib
+Flask-Security
