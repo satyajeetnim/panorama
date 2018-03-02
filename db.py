@@ -1,17 +1,17 @@
 from flask import Flask
-from flask.ext.mongoalchemy import MongoAlchemy
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
-app.config['MONGOALCHEMY_DATABASE'] = 'panorama'
-app.config['MONGOALCHEMY_CONNECTION_STRING'] = 'mongodb://localhost:27017/panorama'
-db = MongoAlchemy(app)
+app.config['MONGO_DBNAME'] = 'panorama'
+app.config['MONGO_HOST'] = 'localhost'
+app.config['MONGO_PORT'] = 27017
 
+mongo = PyMongo(app, config_prefix='MONGO')
 
-class Author(db.Document):
-    name = db.StringField()
+with app.app_context():
+    mongo.db.users.insert({'name': 'Satyajeet',
+                           'username': 'satyajeetnim',
+                           'email': 'satyajeetnim@gmail.com'})
 
-
-class Book(db.Document):
-    title = db.StringField()
-    author = db.DocumentField(Author)
-    year = db.IntField()
+if __name__ == '__main__':
+    app.run(debug=True)
