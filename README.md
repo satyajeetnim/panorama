@@ -1,5 +1,4 @@
 # Panorama
-===========
 
 1. Install python version 3.x: brew install python3
 2. Install pip3: brew install pip3
