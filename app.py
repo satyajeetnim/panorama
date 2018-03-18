@@ -70,11 +70,6 @@ def login():
     if request.method == 'POST':
         login_user = mongo.db.users.find_one({'email': request.form['email']})
         if login_user:
-<<<<<<< HEAD
-=======
-            app.logger.info('Existing password: ' + login_user['password'])
-            app.logger.info('Password entered by user: ' + request.form['password'])
->>>>>>> master
             if sha256_crypt.verify(request.form['password'], login_user['password']):
                 session['email'] = request.form['email']
                 session['logged_in'] = True
