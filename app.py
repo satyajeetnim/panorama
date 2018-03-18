@@ -39,6 +39,13 @@ class RegisterForm(Form):
     confirm = PasswordField('Confirm Password')
 
 
+class PropertyForm(Form):
+    address =  StringField('Address', [validators.Length(min=1, max=250)])
+    city = StringField('City', [validators.Length(min=1, max=50)])
+    state = StringField('State', [validators.Length(min=1, max=50)])
+    zip = StringField('Zip', [validators.Length(min=1, max=20)])
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
@@ -63,8 +70,6 @@ def login():
     if request.method == 'POST':
         login_user = mongo.db.users.find_one({'email': request.form['email']})
         if login_user:
-            app.logger.info('Existing password: ' + login_user['password'])
-            app.logger.info('Password entered by user: ' + request.form['password'])
             if sha256_crypt.verify(request.form['password'], login_user['password']):
                 session['email'] = request.form['email']
                 session['logged_in'] = True
@@ -99,10 +104,25 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 @is_logged_in
 def dashboard():
-    return render_template('dashboard.html')
+    propForm = PropertyForm(request.form)
+    properties = list(mongo.db.property.find({'email': session['email']}))
+    if request.method == 'POST':
+        mongo.db.property.insert(
+            {
+                'email': session['email'],
+                'property': {
+                    'address': propForm.address.data,
+                    'city': propForm.city.data,
+                    'state': propForm.state.data,
+                    'zip': propForm.zip.data
+                }
+        })
+        return redirect(url_for('dashboard'))
+    return render_template('dashboard.html', form=propForm, properties=properties)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
