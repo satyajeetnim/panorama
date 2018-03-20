@@ -3,6 +3,8 @@ from wtforms import Form, StringField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from flask.ext.pymongo import PyMongo
 from functools import wraps
+from flask_googlemaps import GoogleMaps, Map
+import requests
 
 
 app = Flask(__name__)
@@ -10,8 +12,13 @@ app.config['MONGO_DBNAME'] = 'panorama'
 app.config['MONGO_HOST'] = 'localhost'
 app.config['MONGO_PORT'] = 27017
 app.config['SECRET_KEY'] = 'abcdxyz321'
+app.config['GOOGLEMAPS_KEY'] = 'AIzaSyC0cZY2JZufg0vLzS6iQTF1wXk-Cqy4bpI'
 
 mongo = PyMongo(app, config_prefix='MONGO')
+GoogleMaps(app)
+
+GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com/maps/api/geocode/json'
+
 
 
 @app.route('/')
@@ -40,7 +47,7 @@ class RegisterForm(Form):
 
 
 class PropertyForm(Form):
-    address =  StringField('Address', [validators.Length(min=1, max=250)])
+    address = StringField('Address', [validators.Length(min=1, max=250)])
     city = StringField('City', [validators.Length(min=1, max=50)])
     state = StringField('State', [validators.Length(min=1, max=50)])
     zip = StringField('Zip', [validators.Length(min=1, max=20)])
@@ -109,6 +116,30 @@ def logout():
 def dashboard():
     propForm = PropertyForm(request.form)
     properties = list(mongo.db.property.find({'email': session['email']}))
+    propMap = Map(
+        identifier='propMap',
+        lat=37.2581997,
+        lng=-104.6549395,
+        zoom=4,
+        style='height:400px;width:100%;margin:0;'
+    )
+
+    for property in properties:
+        params = {
+            'address': property['property']['address'] + ', ' + property['property']['city'] + ', '
+                       + property['property']['state']
+                       + ', ' + property['property']['zip'],
+            'sensor': 'false',
+            'region': 'us',
+            'key': 'AIzaSyC0cZY2JZufg0vLzS6iQTF1wXk-Cqy4bpI',
+        }
+
+        req = requests.get(GOOGLE_MAPS_API_URL, params=params)
+        res = req.json()
+        propMap.add_marker(lat=res['results'][0]['geometry']['location']['lat'], lng=res['results'][0]['geometry']['location']['lng'],
+                           icon='http://maps.google.com/mapfiles/ms/icons/green-dot.png', infobox=params['address'])
+
+
     if request.method == 'POST':
         mongo.db.property.insert(
             {
@@ -121,7 +152,7 @@ def dashboard():
                 }
         })
         return redirect(url_for('dashboard'))
-    return render_template('dashboard.html', form=propForm, properties=properties)
+    return render_template('dashboard.html', form=propForm, properties=properties, propMap=propMap)
 
 
 if __name__ == '__main__':
