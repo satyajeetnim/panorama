@@ -4,22 +4,32 @@
     <h2>Dashboard</h2>
     <p>Welcome {{session.email}}</p>
 
-    {% from "includes/_formhelper.html" import render_field %}
-    <form method="post" action="">
-        <div class="form-group">
-            {{render_field(form.address, class_="form-control")}}
+    <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#addProperty" aria-expanded="true" aria-controls="addProperty">
+            Add Property
+        </button>
+    </h5>
+    <div id="addProperty" class="collapse in" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            {% from "includes/_formhelper.html" import render_field %}
+            <form method="post" action="">
+                <div class="form-group">
+                    {{render_field(form.address, class_="form-control")}}
+                </div>
+                <div class="form-group">
+                    {{render_field(form.city, class_="form-control")}}
+                </div>
+                <div class="form-group">
+                    {{render_field(form.state, class_="form-control")}}
+                </div>
+                <div class="form-group">
+                    {{render_field(form.zip, class_="form-control")}}
+                </div>
+                <p><input type="submit" value="Submit" class="btn btn-primary"></p>
+            </form>
         </div>
-        <div class="form-group">
-            {{render_field(form.city, class_="form-control")}}
-        </div>
-        <div class="form-group">
-            {{render_field(form.state, class_="form-control")}}
-        </div>
-        <div class="form-group">
-            {{render_field(form.zip, class_="form-control")}}
-        </div>
-        <p><input type="submit" value="Submit" class="btn btn-primary"></p>
-    </form>
+    </div>
+
 
     <h3>Your Properties</h3>
 
@@ -44,4 +54,6 @@
          {% endfor %}
     </table>
 
+{{propMap.js}}
+{{propMap.html}}
 {% endblock %}

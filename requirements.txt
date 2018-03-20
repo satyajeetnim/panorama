@@ -3,3 +3,4 @@ Flask-MongoAlchemy
 Flask-WTF
 passlib
 Flask-Security
+flask-googlemaps
