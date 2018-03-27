@@ -1,7 +1,7 @@
 from flask import Blueprint
 
-public = Blueprint('public', __name__)
+module = Blueprint('public', __name__)
 
-@public.route('/')
+@module.route('/')
 def home():
     return 'Home'
