@@ -1,16 +1,7 @@
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from flask import Flask
-APP_DIR = os.path.dirname(os.path.abspath(__file__))
-
 from panorama import public, owners, managers, admin
 
-app = Flask(
-    __name__,
-    template_folder=os.path.join(APP_DIR, '..', 'templates'),
-    )
+app = Flask(__name__)
 
 from panorama.public.views import module
 from panorama.owners.views import module
