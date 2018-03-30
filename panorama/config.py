@@ -15,11 +15,11 @@ class Config(object):
         self.MAIL_SERVER = 'smtp.gmail.com'
         self.MAIL_PORT = 465
         self.MAIL_USE_SSL = True
-        self.MAIL_USERNAME = 'atyajeetnim@gmail.com'
-        self.MAIL_PASSWORD = 'jeet&puj0302'
+        self.MAIL_USERNAME = 'XXXXXXXXXXX'
+        self.MAIL_PASSWORD = 'XXXXXXXXXXX'
 
         # Flask-Security configs
-        self.SECURITY_EMAIL_SENDER = 'Security < security@example.com >'
+        self.SECURITY_EMAIL_SENDER = 'Panorama < security@panorama.com >'
         self.SECURITY_LOGIN_WITHOUT_CONFIRMATION = True
         self.SECURITY_REGISTERABLE = True
         self.SECURITY_RECOVERABLE = True
