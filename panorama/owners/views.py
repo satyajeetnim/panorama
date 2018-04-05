@@ -1,9 +1,22 @@
-from flask import Blueprint
-from flask_security import login_required
+from flask import Blueprint, request, render_template
+from panorama.forms import LoginForm, RegisterForm
 
-module = Blueprint('owners', __name__)
+module = Blueprint('owners', __name__, template_folder='pages')
 
-@module.route('/owner-login')
-@login_required
+@module.route('/owner-login', methods=['GET', 'POST'])
 def owner_login():
-    return 'Welcome to Owners Profile'
+    login_form = LoginForm()
+    if request.method == 'POST' and login_form.validate_on_submit():
+        pass
+
+    return render_template('login.html', form=login_form)
+
+
+@module.route('/owner-register', methods=['GET', 'POST'])
+def owner_register():
+    register_form = RegisterForm()
+
+    if request.method == 'POST' and register_form.validate_on_submit():
+        pass
+
+    return render_template('register.html', form=register_form)
