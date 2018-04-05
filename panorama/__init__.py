@@ -1,10 +1,13 @@
 from flask import Flask
-from flask_security import Security, MongoEngineUserDatastore
+from flask_bootstrap import Bootstrap
 from panorama import public, owners, managers, admin
 from panorama.models import User, Role
 
 # Creating Flask app
 app = Flask(__name__)
+
+# Initialize flask-bootstrap
+Bootstrap(app)
 
 # Load configuration
 app.config.from_object('panorama.config.panorama_config')
@@ -13,14 +16,6 @@ app.config.from_object('panorama.config.panorama_config')
 from panorama.models import mongodb
 app.db = mongodb
 app.db.init_app(app)
-
-# Setup Flask-Security
-panorama = MongoEngineUserDatastore(app.db, User, Role)
-security = Security(app, panorama)
-
-# Email
-from flask.ext.mail import Mail
-app.mail = Mail(app)
 
 # Import and register Blueprints
 from panorama.public.views import module
